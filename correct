@@ -1,0 +1,105 @@
+Main.cpp
+
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+
+#include "dod.h"
+#include "sum.h"
+#include "var.h"
+
+using namespace std;
+using namespace nsDod;
+using namespace nsSum;
+using namespace nsVar;
+
+int main()
+{
+    cout << "xp = "; cin >> xp;
+    cout << "xk = "; cin >> xk;
+    cout << "dx = "; cin >> dx;
+    cout << "eps = "; cin >> eps;
+    cout << endl;
+
+    cout << "-------------------------------------------------" << endl;
+    cout << "|" << setw(5) << "x" << " |"
+         << setw(10) << "S" << " |"
+         << setw(17) << "log(x+1)" << " |"
+         << setw(7) << "n" << " |"
+         << endl;
+    cout << "-------------------------------------------------" << endl;
+
+    x = xp;
+    while ( x <= xk ){
+        sum();
+        cout << "|" << setw(7) << setprecision(2) << x << " |"
+             << setw(10) << setprecision(5) << S << " |"
+             << setw(10) << setprecision(5) << log(x+1) << " |"
+             << setw(5) << n << " |"
+             << endl;
+        x += dx;
+    }
+    cin.get();
+    return 0;
+}
+
+Dod.cpp
+#include "var.h"
+#include "dod.h"
+#include <cmath>
+using namespace nsVar;
+using namespace nsDod;
+void nsDod::dod()
+{
+    a *= x * (pow(-1., n) * pow(x, n + 1)) / (n + 1.);
+}
+
+Dod.h
+#pragma once
+namespace nsDod {
+    void dod();
+}
+
+Var.cpp
+#include "var.h"
+
+namespace nsVar{
+    int n;
+    double x, xp, xk, dx, eps, a, S;
+};
+
+Var.h
+namespace nsVar{
+    extern int n; 
+    extern double x, xp, xk, dx, eps, a, S;
+};
+
+Sum.cpp
+#include <cmath>
+
+#include "var.h"
+#include "dod.h"
+#include "sum.h"
+
+
+using namespace nsDod;
+using namespace nsVar;
+
+void nsSum::sum(){
+    n = 0;
+    a = 1;
+    S = a;
+    do{
+        n++;
+        dod();
+        S += a;
+    } while(fabs(a) > eps);
+}
+
+Sum.h
+#pragma once
+
+namespace nsSum
+{
+    void sum();
+};
